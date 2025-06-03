@@ -21,7 +21,6 @@ class SlidingText extends StatelessWidget {
               style: ZTextTheme.lightTextTheme.bodyLarge!.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: ZSizes.fontSizeMd,
-
                 color:
                     isDark
                         ? ZColors.textOnPrimary.withOpacity(0.85)

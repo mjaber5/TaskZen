@@ -15,24 +15,20 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     final authRepository = RepositoryProvider.of<AuthRepository>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return BlocProvider(
       create:
           (context) =>
               AuthCubit(authRepository: authRepository)..checkAuthStatus(),
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
-            Future.delayed(const Duration(seconds: 2), () {
-              // ignore: use_build_context_synchronously
+          Future.delayed(const Duration(milliseconds: 3000), () {
+            if (!context.mounted) return;
+            if (state is AuthSuccess) {
               GoRouter.of(context).pushReplacement(AppRouter.homeView);
-            });
-          } else if (state is AuthInitial || state is AuthError) {
-            Future.delayed(const Duration(seconds: 2), () {
-              // ignore: use_build_context_synchronously
+            } else if (state is AuthInitial || state is AuthError) {
               GoRouter.of(context).pushReplacement(AppRouter.loginView);
-            });
-          }
+            }
+          });
         },
         child: Scaffold(
           backgroundColor: isDark ? ZColors.black : ZColors.white,

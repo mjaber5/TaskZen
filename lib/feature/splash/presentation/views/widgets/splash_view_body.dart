@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:task_zen/core/utils/app_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/core/utils/constants/sizes.dart';
 import 'package:task_zen/core/utils/theme/custom_themes/text_theme.dart';
+import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_cubit.dart';
+import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_state.dart';
 import 'package:task_zen/feature/splash/presentation/views/widgets/custom_splash_view.dart';
 import 'package:task_zen/feature/splash/presentation/views/widgets/sliding_text.dart';
+import 'package:toasty_box/toast_enums.dart';
+import 'package:toasty_box/toast_service.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -65,10 +68,6 @@ class _SplashViewBodyState extends State<SplashViewBody>
       ),
     );
 
-    Future.delayed(const Duration(milliseconds: 4000), () {
-      GoRouter.of(context).pushReplacement(AppRouter.loginView);
-    });
-
     _animationController.forward();
   }
 
@@ -81,58 +80,97 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: RotationTransition(
-                turns: _rotationAnimation,
-                child: const CustomView(),
-              ),
-            ),
-          ),
-          SizedBox(height: ZSizes.lg),
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: Row(
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          ToastService.showErrorToast(
+            context,
+            length: ToastLength.medium,
+            expandedHeight: 100,
+            message: state.message,
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthError) {
+          return Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'T',
-                  style: ZTextTheme.lightTextTheme.displayLarge!.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: ZColors.secondary,
-                    fontSize: ZSizes.iconXl,
+                const Text(
+                  'Failed to initialize app',
+                  style: TextStyle(
+                    color: ZColors.white,
+                    fontSize: ZSizes.fontSizeLg,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                Text(
-                  'askZen',
-                  style: ZTextTheme.lightTextTheme.displayLarge!.copyWith(
-                    fontSize: ZSizes.iconXl,
-                    fontWeight: FontWeight.w900,
-                    color: isDark ? ZColors.textOnPrimary : ZColors.textPrimary,
-                  ),
-                  textAlign: TextAlign.center,
+                const SizedBox(height: ZSizes.md),
+                ElevatedButton(
+                  onPressed: () => context.read<AuthCubit>().checkAuthStatus(),
+                  child: const Text('Retry'),
                 ),
               ],
             ),
+          );
+        }
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: RotationTransition(
+                    turns: _rotationAnimation,
+                    child: const CustomView(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: ZSizes.lg),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'T',
+                      style: ZTextTheme.lightTextTheme.displayLarge!.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: ZColors.secondary,
+                        fontSize: ZSizes.iconXl,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'askZen',
+                      style: ZTextTheme.lightTextTheme.displayLarge!.copyWith(
+                        fontSize: ZSizes.iconXl,
+                        fontWeight: FontWeight.w900,
+                        color:
+                            isDark
+                                ? ZColors.textOnPrimary
+                                : ZColors.textPrimary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: ZSizes.sm),
+              SlidingText(slidingAnimation: _slidingAnimation),
+              const SizedBox(height: ZSizes.xl),
+              if (state is AuthLoading)
+                CircularProgressIndicator(
+                  color: ZColors.secondary,
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(ZColors.secondary),
+                ),
+            ],
           ),
-          SizedBox(height: ZSizes.sm),
-          SlidingText(slidingAnimation: _slidingAnimation),
-          SizedBox(height: ZSizes.xl),
-          CircularProgressIndicator(
-            color: ZColors.secondary,
-            strokeWidth: 2.5,
-            valueColor: AlwaysStoppedAnimation<Color>(ZColors.secondary),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
