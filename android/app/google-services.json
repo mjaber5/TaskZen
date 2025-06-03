@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "487051262336",
+    "project_id": "study-bloc",
+    "storage_bucket": "study-bloc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487051262336:android:b9fd72dacc7366e35ea965",
+        "android_client_info": {
+          "package_name": "com.example.task_zen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMr8P6POBtcaykQObYcOcIBzzboT6F_y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
