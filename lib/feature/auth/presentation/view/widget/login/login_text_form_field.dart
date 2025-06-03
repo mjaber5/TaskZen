@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:task_zen/core/utils/app_router.dart';
+import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/core/utils/constants/sizes.dart';
+import 'package:task_zen/core/utils/helpers/app_regex.dart';
+import 'package:task_zen/core/utils/theme/custom_themes/text_theme.dart';
 import 'package:task_zen/feature/auth/presentation/view/widget/login/forgot_password.dart';
-import 'package:task_zen/feature/auth/presentation/view/widget/login/login_button.dart';
 import 'package:task_zen/feature/auth/presentation/view/widget/login/login_dont_have_account.dart';
+import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_cubit.dart';
+import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_state.dart';
+import 'package:toasty_box/toast_enums.dart';
+import 'package:toasty_box/toast_service.dart';
 
 class LoginTextFormFields extends StatelessWidget {
   const LoginTextFormFields({
@@ -22,35 +31,135 @@ class LoginTextFormFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
-              prefixIcon: Icon(Icons.email_outlined, size: ZSizes.iconMd),
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          GoRouter.of(context).pushReplacement(AppRouter.homeView);
+          ToastService.showSuccessToast(
+            context,
+            length: ToastLength.medium,
+            expandedHeight: 100,
+            message: "Logged in successfully!",
+          );
+        } else if (state is AuthError) {
+          ToastService.showErrorToast(
+            context,
+            length: ToastLength.medium,
+            expandedHeight: 100,
+            message: state.message,
+          );
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'Enter your email',
+                prefixIcon: Icon(Icons.email_outlined, size: ZSizes.iconMd),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!AppRegex.isEmailValid(value)) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
             ),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          SizedBox(height: ZSizes.spaceBtwInputFields),
-          TextFormField(
-            controller: _passwordController,
-            decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock_outline, size: ZSizes.iconMd),
+            const SizedBox(height: ZSizes.spaceBtwInputFields),
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                prefixIcon: Icon(Icons.lock_outline, size: ZSizes.iconMd),
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                if (!AppRegex.isPasswordValid(value)) {
+                  return 'Invalid password format';
+                }
+                return null;
+              },
             ),
-          ),
-          SizedBox(height: ZSizes.sm),
-          ForgotPassword(),
-          SizedBox(height: ZSizes.lg),
-          LoginButton(),
-          SizedBox(height: ZSizes.md),
-          DontHaveAccount(isDark: isDark),
-        ],
+            const SizedBox(height: ZSizes.sm),
+            ForgotPassword(
+              onPressed: () async {
+                if (_emailController.text.isNotEmpty &&
+                    AppRegex.isEmailValid(_emailController.text)) {
+                  try {
+                    await context.read<AuthCubit>().sendPasswordResetEmail(
+                      _emailController.text.trim(),
+                    );
+                    ToastService.showSuccessToast(
+                      context,
+                      length: ToastLength.medium,
+                      expandedHeight: 100,
+                      message: "Password reset email sent!",
+                    );
+                  } catch (e) {
+                    ToastService.showErrorToast(
+                      context,
+                      length: ToastLength.medium,
+                      expandedHeight: 100,
+                      message: e.toString(),
+                    );
+                  }
+                } else {
+                  ToastService.showErrorToast(
+                    context,
+                    length: ToastLength.medium,
+                    expandedHeight: 100,
+                    message: "Please enter a valid email",
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: ZSizes.lg),
+            BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed:
+                        state is AuthLoading
+                            ? null
+                            : () {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<AuthCubit>().login(
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim(),
+                                );
+                              }
+                            },
+                    child:
+                        state is AuthLoading
+                            ? const CircularProgressIndicator(
+                              color: ZColors.buttonText,
+                              strokeWidth: 2.0,
+                            )
+                            : Text(
+                              'Login',
+                              style: ZTextTheme.lightTextTheme.labelLarge!
+                                  .copyWith(color: ZColors.buttonText),
+                            ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: ZSizes.md),
+            DontHaveAccount(isDark: isDark),
+          ],
+        ),
       ),
     );
   }

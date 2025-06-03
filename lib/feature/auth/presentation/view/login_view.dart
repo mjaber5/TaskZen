@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
+import 'package:task_zen/feature/auth/model/data/repositories/auth_repositiory.dart';
 import 'package:task_zen/feature/auth/presentation/view/widget/login/login_view_body.dart';
+import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_cubit.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -9,9 +11,13 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      backgroundColor: isDark ? ZColors.black : ZColors.white,
-      body: LoginViewBody(),
+    final authRepository = RepositoryProvider.of<AuthRepository>(context);
+    return BlocProvider(
+      create: (context) => AuthCubit(authRepository: authRepository),
+      child: Scaffold(
+        backgroundColor: isDark ? ZColors.black : ZColors.white,
+        body: const LoginViewBody(),
+      ),
     );
   }
 }
