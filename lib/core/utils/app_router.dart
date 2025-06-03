@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:task_zen/feature/splash/presentation/view/splash_view.dart';
+import 'package:task_zen/feature/splash/presentation/views/splash_view.dart';
 
 abstract class AppRouter {
   static const String splashRoute = '/';
