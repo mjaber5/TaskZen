@@ -2,9 +2,39 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/core/utils/constants/sizes.dart';
+import 'package:task_zen/feature/auth/model/data/repositories/auth_repositiory.dart';
 
-class ProfileViewBody extends StatelessWidget {
+class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
+
+  @override
+  State<ProfileViewBody> createState() => _ProfileViewBodyState();
+}
+
+class _ProfileViewBodyState extends State<ProfileViewBody> {
+  late final AuthRepository _userRepo;
+  String userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _userRepo = AuthRepository();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    try {
+      final user = await _userRepo.getCurrentUser();
+      setState(() {
+        userName = user?.displayName ?? 'Guest';
+      });
+    } catch (e) {
+      log('Error fetching user name: $e');
+      setState(() {
+        userName = 'Guest';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +66,7 @@ class ProfileViewBody extends StatelessWidget {
 
             /// 👨‍💼 Name
             Text(
-              'John Doe',
+              userName.isNotEmpty ? userName : 'John Doe',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

@@ -1,6 +1,6 @@
-import 'dart:ui'; // For BackdropFilter
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/feature/home/presentation/view/home_view.dart';
 import 'package:task_zen/feature/profile/presentation/view/profile_view.dart';
@@ -23,10 +23,10 @@ class _LayoutViewState extends State<LayoutView> {
 
   // Navigation item configurations
   static const List<Map<String, dynamic>> _navItems = [
-    {'icon': Icons.home, 'label': 'Home', 'semanticLabel': 'Home Screen'},
+    {'icon': Iconsax.home_2, 'label': 'Home', 'semanticLabel': 'Home Screen'},
 
     {
-      'icon': Icons.person,
+      'icon': Iconsax.user,
       'label': 'Profile',
       'semanticLabel': 'Profile Screen',
     },
