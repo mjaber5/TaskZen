@@ -34,7 +34,7 @@ class LoginTextFormFields extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          GoRouter.of(context).pushReplacement(AppRouter.homeView);
+          GoRouter.of(context).pushReplacement(AppRouter.layoutView);
           ToastService.showSuccessToast(
             context,
             length: ToastLength.medium,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:task_zen/core/utils/app_router.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/feature/auth/presentation/view_model/cubit/auth_cubit.dart';
+import 'package:task_zen/feature/home/presentation/view/widget/home_view_body.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -14,6 +15,7 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDark ? ZColors.black : ZColors.white,
       appBar: AppBar(
+        backgroundColor: isDark ? ZColors.black : ZColors.white,
         title: const Text('TaskZen Home'),
         actions: [
           IconButton(
@@ -25,7 +27,7 @@ class HomeView extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(child: Text('Welcome to TaskZen!')),
+      body: HomeViewBody(),
     );
   }
 }

@@ -24,7 +24,7 @@ class SplashView extends StatelessWidget {
           Future.delayed(const Duration(milliseconds: 3000), () {
             if (!context.mounted) return;
             if (state is AuthSuccess) {
-              GoRouter.of(context).pushReplacement(AppRouter.homeView);
+              GoRouter.of(context).pushReplacement(AppRouter.layoutView);
             } else if (state is AuthInitial || state is AuthError) {
               GoRouter.of(context).pushReplacement(AppRouter.loginView);
             }

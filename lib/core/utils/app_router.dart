@@ -2,13 +2,18 @@ import 'package:go_router/go_router.dart';
 import 'package:task_zen/feature/auth/presentation/view/login_view.dart';
 import 'package:task_zen/feature/auth/presentation/view/signup_view.dart';
 import 'package:task_zen/feature/home/presentation/view/home_view.dart';
+import 'package:task_zen/feature/layout/presentation/view/layout_view.dart';
+import 'package:task_zen/feature/profile/presentation/view/profile_view.dart';
 import 'package:task_zen/feature/splash/presentation/views/splash_view.dart';
 
 abstract class AppRouter {
   static const String splashRoute = '/';
   static const String loginView = '/loginView';
   static const String signupView = '/signupView';
+  static const String layoutView = '/layoutView';
   static const String homeView = '/homeView';
+  static const String profileView = '/profileView';
+
   static final router = GoRouter(
     routes: [
       GoRoute(
@@ -26,7 +31,15 @@ abstract class AppRouter {
             (context, state) =>
                 const SignupView(), // Placeholder for Login View
       ),
+      GoRoute(
+        path: layoutView,
+        builder: (context, state) => const LayoutView(),
+      ),
       GoRoute(path: homeView, builder: (context, state) => const HomeView()),
+      GoRoute(
+        path: profileView,
+        builder: (context, state) => const ProfileView(),
+      ),
     ],
   );
 }
