@@ -23,13 +23,9 @@ class _LayoutViewState extends State<LayoutView> {
 
   // Navigation item configurations
   static const List<Map<String, dynamic>> _navItems = [
-    {'icon': Iconsax.home_2, 'label': 'Home', 'semanticLabel': 'Home Screen'},
+    {'icon': Iconsax.home_2, 'label': 'Home'},
 
-    {
-      'icon': Iconsax.user,
-      'label': 'Profile',
-      'semanticLabel': 'Profile Screen',
-    },
+    {'icon': Iconsax.user},
   ];
 
   @override
@@ -52,7 +48,7 @@ class _LayoutViewState extends State<LayoutView> {
             }
           },
           outlineBorderColor: Colors.transparent,
-          itemPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          itemPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 35),
           borderRadius: 30, // Ensure inner content respects rounded corners
           backgroundColor: ZColors.accent.withOpacity(
             0.19,
