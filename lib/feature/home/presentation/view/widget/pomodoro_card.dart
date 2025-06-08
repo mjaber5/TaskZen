@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 
 class PomodoroCard extends StatelessWidget {
@@ -14,7 +15,14 @@ class PomodoroCard extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-            Icon(Icons.timer, color: Colors.orange),
+            Lottie.asset(
+              'assets/lottie/clock.json',
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+
+              repeat: true,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

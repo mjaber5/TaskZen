@@ -222,8 +222,13 @@ class _AiViewBodyState extends State<AiViewBody>
               ),
               const SizedBox(height: ZSizes.sm),
               _isLoading
-                  ? const Center(
-                    child: CircularProgressIndicator(color: ZColors.secondary),
+                  ? Center(
+                    child: Lottie.asset(
+                      'assets/lottie/ai.json',
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
                   )
                   : _subtasks.isEmpty
                   ? Center(

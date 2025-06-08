@@ -21,7 +21,7 @@ class AppBarSection extends StatelessWidget {
             color: isDark ? ZColors.textOnPrimary : ZColors.textPrimary,
           ),
           onPressed: () {
-            CustomDrawer();
+            CustomDrawer.openDrawer(context);
           },
         ),
         Container(

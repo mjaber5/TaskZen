@@ -34,7 +34,7 @@ class _LoginViewBodyState extends State<LoginViewBody>
                 width: ZSizes.iconXl * 3,
                 height: ZSizes.iconXl * 3,
                 fit: BoxFit.cover,
-                repeat: false,
+                repeat: true,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
