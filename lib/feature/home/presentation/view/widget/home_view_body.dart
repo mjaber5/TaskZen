@@ -5,7 +5,6 @@ import 'package:task_zen/feature/home/presentation/view/widget/app_bar_section.d
 import 'package:task_zen/feature/home/presentation/view/widget/custom_search_bar.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/hello_serction_and_tasks_number.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/pomodoro_card.dart';
-import 'package:task_zen/feature/home/presentation/view/widget/task_list_preview.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/task_tab_bar.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/weekly_summary.dart';
 
@@ -39,16 +38,15 @@ class _HomeViewBodyState extends State<HomeViewBody> {
               /// ➕ Quick Add Task
               CustomSearchBar(),
 
-              const SizedBox(height: 45),
+              const SizedBox(height: 24),
 
               /// 📅 Ta,bs (Today, Upcoming, Completed)
               TaskTabBar(),
 
-              const SizedBox(height: 45),
+              const SizedBox(height: 24),
 
               /// 📝 Ta,sk List Preview
-              TaskListPreview(),
-
+              //TaskListPreview(),
               const SizedBox(height: 20),
 
               /// ⏱️ Po,modoro / Focus Mode

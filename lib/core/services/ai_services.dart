@@ -1,13 +1,15 @@
 // File: lib/core/services/ai_service.dart
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AIService {
   static const String _geminiUrl =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-  static const String _apiKey =
-      "AIzaSyAeS5W6MQOzFZNNaKgGE453g83_hvwXP2g"; // Replace with your valid Gemini API key
+  static final String _apiKey =
+      dotenv.env['GEMINI_API_KEY'] ??
+      ''; // Replace with your valid Gemini API key
 
   Future<List<String>> getSubtasks(String task) async {
     try {

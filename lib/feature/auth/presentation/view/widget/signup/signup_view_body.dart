@@ -38,6 +38,13 @@ class _SignupViewBodyState extends State<SignupViewBody>
                 ),
                 textAlign: TextAlign.center,
               ),
+              Text(
+                'start your journey with us',
+                style: ZTextTheme.lightTextTheme.titleLarge!.copyWith(
+                  color: ZColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: ZSizes.lg),
               SignupTextFormField(
                 formKey: _formKey,

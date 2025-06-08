@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:task_zen/core/utils/app_router.dart';
 import 'package:task_zen/core/utils/constants/colors.dart';
 import 'package:task_zen/core/utils/constants/sizes.dart';
 import 'package:task_zen/feature/auth/model/data/repositories/auth_repositiory.dart';
@@ -53,14 +55,8 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             /// 👤 Profile Picture
             CircleAvatar(
               radius: 50,
-              backgroundImage: const NetworkImage(
-                'https://www.example.com/profile_image.png',
-              ),
-              onBackgroundImageError: (exception, stackTrace) {
-                log('Error loading profile image: $exception');
-              },
+              backgroundImage: AssetImage('assets/images/9720007.jpg'),
               backgroundColor: isDark ? ZColors.greyDark : ZColors.white,
-              child: const Icon(Icons.person, size: 50, color: Colors.grey),
             ),
             const SizedBox(height: ZSizes.md),
 
@@ -132,7 +128,17 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             /// 🚪 Logout
             TextButton.icon(
               onPressed: () {
-                // TODO: Handle Logout
+                _userRepo
+                    .logout()
+                    .then((_) {
+                      GoRouter.of(context).pushReplacement(AppRouter.loginView);
+                    })
+                    .catchError((error) {
+                      log('Logout failed: $error');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Logout failed: $error')),
+                      );
+                    });
               },
               icon: const Icon(Icons.logout),
               label: const Text('Logout'),
