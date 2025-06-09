@@ -44,7 +44,18 @@ class ZColors {
   static const Color buttonSecondary = Color(0xFF1976D2); // Matches secondary
   static const Color buttonDisabled = Color(0xFFB0BEC5); // Neutral grey
   static const Color buttonText = Color(0xFFFFFFFF); // White for button text
-
+  static const Color buttonOrange = Color.fromARGB(
+    255,
+    255,
+    162,
+    0,
+  ); // Amber for action buttons,
+  static const Color buttonGreen = Color.fromARGB(
+    255,
+    76,
+    175,
+    80,
+  ); // Green for success actions
   // Border Colors
   static const Color borderPrimary = Color(
     0xFFE0E0E0,

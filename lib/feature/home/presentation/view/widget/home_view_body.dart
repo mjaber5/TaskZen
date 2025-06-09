@@ -5,65 +5,63 @@ import 'package:task_zen/feature/home/presentation/view/widget/app_bar_section.d
 import 'package:task_zen/feature/home/presentation/view/widget/custom_search_bar.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/hello_serction_and_tasks_number.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/pomodoro_card.dart';
+import 'package:task_zen/feature/home/presentation/view/widget/task_list_preview.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/task_tab_bar.dart';
 import 'package:task_zen/feature/home/presentation/view/widget/weekly_summary.dart';
 
-class HomeViewBody extends StatefulWidget {
+class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
 
-  @override
-  State<HomeViewBody> createState() => _HomeViewBodyState();
-}
-
-class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
       bottom: false,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppBarSection(isDark: isDark),
-              const SizedBox(height: 6),
-
-              HelloSectionAndTasksNumber(isDark: isDark),
-
-              const SizedBox(height: 20),
-
-              /// ➕ Quick Add Task
-              CustomSearchBar(),
-
-              const SizedBox(height: 24),
-
-              /// 📅 Ta,bs (Today, Upcoming, Completed)
-              TaskTabBar(),
-
-              const SizedBox(height: 24),
-
-              /// 📝 Ta,sk List Preview
-              //TaskListPreview(),
-              const SizedBox(height: 20),
-
-              /// ⏱️ Po,modoro / Focus Mode
-              PomodoroCard(),
-
-              const SizedBox(height: 20),
-
-              /// 🤖 AI ,Suggestions
-              AiSuggestionCard(),
-
-              const SizedBox(height: 20),
-
-              /// 📈 W,eekly Summary
-              WeeklySummary(),
-            ],
+      child: Column(
+        children: [
+          /// 🚫 Not Scrollable: Fixed AppBar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+            child: Column(
+              children: [
+                AppBarSection(isDark: isDark),
+                HelloSectionAndTasksNumber(isDark: isDark),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
-        ),
+
+          /// ✅ Scrollable Body
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomSearchBar(),
+                  const SizedBox(height: 24),
+                  TaskTabBar(),
+                  const SizedBox(height: 24),
+                  TaskListPreview(),
+                  const SizedBox(height: 20),
+                  PomodoroCard(),
+                  const SizedBox(height: 20),
+                  AiSuggestionCard(),
+                  const SizedBox(height: 20),
+                  WeeklySummary(),
+                  const SizedBox(height: 20),
+                  Container(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

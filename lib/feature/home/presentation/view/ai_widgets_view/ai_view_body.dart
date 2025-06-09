@@ -142,146 +142,166 @@ class _AiViewBodyState extends State<AiViewBody>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color backgroundColor =
+        isDark ? ZColors.backgroundDark : ZColors.white;
+
     return SafeArea(
       child: SingleChildScrollView(
-        child: Padding(
+        child: Container(
+          width: double.infinity,
           padding: const EdgeInsets.all(ZSizes.md),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(32),
+              topRight: Radius.circular(32),
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'What do you want to accomplish?',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: isDark ? ZColors.textOnPrimary : ZColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: ZSizes.lg),
+              inputTaskSection(isDark, context),
+              const SizedBox(height: ZSizes.xl),
+              Text(
+                'AI Suggestions',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: isDark ? ZColors.textOnPrimary : ZColors.textPrimary,
                 ),
               ),
               const SizedBox(height: ZSizes.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _taskController,
-                      decoration: InputDecoration(
-                        hintText: 'e.g., Plan a team meeting',
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? ZColors.greyDark.withOpacity(0.2)
-                                : ZColors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(ZSizes.sm),
-                          borderSide: BorderSide.none,
-                        ),
-                        suffixIcon:
-                            _taskController.text.isNotEmpty
-                                ? IconButton(
-                                  icon: Icon(
-                                    Icons.clear,
-                                    color:
-                                        isDark
-                                            ? ZColors.textOnPrimary
-                                            : ZColors.textPrimary,
-                                  ),
-                                  onPressed: _clearInput,
-                                )
-                                : null,
-                      ),
-                      style: TextStyle(
-                        color:
-                            isDark
-                                ? ZColors.textOnPrimary
-                                : ZColors.textPrimary,
-                      ),
-                      onSubmitted: (_) => _fetchSubtasks(),
-                    ),
+              if (_isLoading)
+                Center(
+                  child: Lottie.asset(
+                    'assets/lottie/ai.json',
+                    width: 120,
+                    height: 120,
                   ),
-                  const SizedBox(width: ZSizes.sm),
-                  GestureDetector(
-                    onTap: _isListening ? _stopListening : _startListening,
-                    child: AnimatedBuilder(
-                      animation: _micAnimationController,
-                      builder:
-                          (context, child) => Transform.scale(
-                            scale: _micScaleAnimation.value,
-                            child: Lottie.asset(
-                              'assets/lottie/mic.json',
-                              width: 80,
-                              height: 80,
-                            ),
-                          ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: ZSizes.lg),
-              Text(
-                'AI Suggestions',
-                style: TextStyle(
-                  color: isDark ? ZColors.textOnPrimary : ZColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: ZSizes.sm),
-              _isLoading
-                  ? Center(
-                    child: Lottie.asset(
-                      'assets/lottie/ai.json',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                  : _subtasks.isEmpty
-                  ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: ZSizes.lg),
-                      child: Text(
-                        'No subtasks generated yet.',
-                        style: TextStyle(
-                          color:
-                              isDark
-                                  ? ZColors.textOnPrimary
-                                  : ZColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                  )
-                  : ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _subtasks.length,
-                    separatorBuilder:
-                        (context, index) => const SizedBox(height: ZSizes.sm),
-                    itemBuilder:
-                        (context, index) => Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(ZSizes.sm),
-                          ),
-                          elevation: 2,
-                          color:
-                              isDark
-                                  ? ZColors.greyDark.withOpacity(0.4)
-                                  : ZColors.white,
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.check_circle_outline,
-                              color: ZColors.secondary,
-                            ),
-                            title: Text(
-                              _subtasks[index],
-                              style: TextStyle(
-                                color:
-                                    isDark
-                                        ? ZColors.textOnPrimary
-                                        : ZColors.textPrimary,
-                              ),
-                            ),
-                          ),
-                        ),
-                  ),
+                )
+              else if (_subtasks.isEmpty)
+                NoSubTasks(isDark: isDark)
+              else
+                SubTasksView(subtasks: _subtasks),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Row inputTaskSection(bool isDark, BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _taskController,
+            decoration: InputDecoration(
+              hintText: 'e.g., Plan a team meeting',
+              prefixIcon: Icon(
+                Icons.task_alt_outlined,
+                color: ZColors.secondary,
+              ),
+              suffixIcon:
+                  _taskController.text.isNotEmpty
+                      ? IconButton(
+                        icon: Icon(Icons.clear, color: ZColors.secondary),
+                        onPressed: _clearInput,
+                      )
+                      : null,
+              filled: true,
+              fillColor:
+                  isDark ? ZColors.greyDark.withOpacity(0.2) : ZColors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            style: Theme.of(context).textTheme.bodyLarge,
+            onSubmitted: (_) => _fetchSubtasks(),
+          ),
+        ),
+        const SizedBox(width: ZSizes.sm),
+        GestureDetector(
+          onTap: _isListening ? _stopListening : _startListening,
+          child: AnimatedBuilder(
+            animation: _micAnimationController,
+            builder:
+                (context, child) => Transform.scale(
+                  scale: _micScaleAnimation.value,
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: ZColors.secondary,
+                    child: Lottie.asset(
+                      'assets/lottie/mic.json',
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class NoSubTasks extends StatelessWidget {
+  const NoSubTasks({super.key, required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: ZSizes.lg),
+        child: Text(
+          'No subtasks generated yet.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color:
+                isDark
+                    ? ZColors.textOnPrimary.withOpacity(0.6)
+                    : ZColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SubTasksView extends StatelessWidget {
+  const SubTasksView({super.key, required List<String> subtasks})
+    : _subtasks = subtasks;
+
+  final List<String> _subtasks;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _subtasks.length,
+      itemBuilder: (context, index) {
+        final subtask = _subtasks[index].replaceAll('*', '').trim();
+        return Card(
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ListTile(
+            leading: Icon(Icons.check_circle, color: ZColors.secondary),
+            title: Text(subtask, style: Theme.of(context).textTheme.bodyLarge),
+          ),
+        );
+      },
     );
   }
 }

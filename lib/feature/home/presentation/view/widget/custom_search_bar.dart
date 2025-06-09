@@ -8,15 +8,16 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: double.infinity,
-      height: 70,
-      decoration: BoxDecoration(
-        color: isDark ? ZColors.greyDark.withOpacity(0.2) : Colors.white,
-        borderRadius: BorderRadius.circular(25),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
       child: TextField(
         decoration: InputDecoration(
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            borderSide: BorderSide(
+              color: isDark ? ZColors.greyDark.withOpacity(0.2) : Colors.white,
+            ),
+          ),
           hintText: 'Search a task...',
           prefixIcon: Icon(
             Iconsax.search_normal_1,
